@@ -6,7 +6,7 @@ import {warnLock} from '../helpers/warn'
 import { createRoute, navjump } from '../public/methods';
 const Regexp = require('path-to-regexp');
 
-export function voidFun(...args:any):void{}
+export function voidFun(...args:any):void {}
 
 export function def(
     defObject:objectAny,
@@ -339,7 +339,7 @@ T extends {
     return target;
 }
 
-export function deepClone<T>(source:T):T {
+export function deepClone<T extends { [key: string]: any}>(source:T):T {
     const __ob__ = getDataType<T>(source) === '[object Array]' ? ([] as Array<any>) : ({} as objectAny);
     baseClone(source, __ob__)
     return __ob__ as T
@@ -352,7 +352,7 @@ export function lockDetectWarn(
     next:Function,
     uniActualData:uniBackApiRule|uniBackRule|undefined = {},
     passiveType?:'beforeHooks'| 'afterHooks'
-):void{
+):void {
     if (passiveType === 'afterHooks') {
         next();
     } else {
@@ -427,7 +427,7 @@ export function deepDecodeQuery(
     for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
         const it = query[key];
-        if (typeof it === 'string') {
+        if (Object.prototype.toString.call(it) === '[object String]') {
             try {
                 let json = JSON.parse(decodeURIComponent(it));
                 if (typeof json !== 'object') {
@@ -441,7 +441,7 @@ export function deepDecodeQuery(
                     formatQuery[key] = it
                 }
             }
-        } else if (typeof it === 'object') {
+        } else if (['[object Object]', '[object Array]'].includes(Object.prototype.toString.call(it))) {
             const childQuery = deepDecodeQuery(it);
             formatQuery[key] = childQuery
         } else {
